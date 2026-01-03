@@ -1,0 +1,101 @@
+party_id,party_name,status,address_type,address_line1,address_line2,postcode,city,country,businessid_type,business_id_value,email,role,phone,create_date,update_date
+P001,Acme Corporation Ltd,Active,Business,123 Main Street,Suite 100,10001,New York,USA,TAX_ID,12-3456789,contact@acmecorp.com,Lessee,+1-212-555-0101,2020-01-15,2023-06-20
+P002,ACME CORPORATION LIMITED,Active,Mailing,123 Main St,Ste 100,10001,New York,USA,TAX_ID,123456789,info@acmecorp.com,Lessee,+12125550101,2020-02-10,2023-06-21
+P003,Acme Corp,Active,Business,123 Main Street,Suite 100,10001,New York,USA,TAX_ID,12-3456789,contact@acmecorp.com,Lessor,+1-212-555-0101,2020-01-15,2023-07-15
+P004,Global Tech Industries Inc,Active,Business,456 Oak Avenue,,94105,San Francisco,USA,EIN,98-7654321,admin@globaltech.com,Lessee,+1-415-555-0201,2019-05-20,2023-05-10
+P005,Global Tech Industries,Active,Business,456 Oak Ave,Floor 3,94105,San Francisco,USA,EIN,987654321,contact@globaltech.com,Lessee,+14155550201,2019-06-15,2023-05-11
+P006,GlobalTech Industries Inc.,Active,Mailing,456 Oak Avenue,3rd Floor,94105,San Francisco,USA,EIN,98-7654321,admin@globaltech.com,Supplier,+1-415-555-0201,2019-05-20,2023-08-01
+P007,Blue Ocean Logistics,Active,Business,789 Harbor Blvd,,90210,Los Angeles,USA,TAX_ID,45-6789012,info@blueocean.com,Lessee,+1-310-555-0301,2021-03-10,2023-04-15
+P008,Blue Ocean Logistics LLC,Active,Business,789 Harbor Boulevard,Building A,90210,Los Angeles,USA,TAX_ID,456789012,info@blueocean.com,Lessee,+1-310-555-0301,2021-03-12,2023-04-16
+P009,Bleu Ocean Logistics,Active,Business,789 Harbour Blvd,,90210,Los Angeles,USA,TAX_ID,45-6789012,contact@blueocean.com,Lessor,+13105550301,2021-03-10,2023-07-20
+P010,TechStart Solutions,Active,Business,321 Innovation Drive,,02101,Boston,USA,EIN,11-2233445,hello@techstart.com,Lessee,+1-617-555-0401,2022-01-05,2023-06-30
+P011,TechStart Solutions Inc,Inactive,Business,321 Innovation Dr,,02101,Boston,USA,EIN,112233445,hello@techstart.com,Lessee,+16175550401,2022-01-05,2023-02-28
+P012,Sunrise Manufacturing Co,Active,Business,555 Industrial Pkwy,,60601,Chicago,USA,TAX_ID,78-9012345,orders@sunrisemfg.com,Supplier,+1-312-555-0501,2020-07-14,2023-05-25
+P013,Sunrise Manufacturing Company,Active,Mailing,555 Industrial Parkway,Unit 12,60601,Chicago,USA,TAX_ID,789012345,sales@sunrisemfg.com,Supplier,+13125550501,2020-07-15,2023-05-26
+P014,Quantum Innovations Ltd,Active,Business,888 Research Road,,M5H2N2,Toronto,CAN,BN,123456789RC0001,info@quantuminno.ca,Lessee,+1-416-555-0601,2021-09-01,2023-07-10
+P015,Quantum Innovations Limited,Active,Business,888 Research Rd,,M5H 2N2,Toronto,CAN,BN,123456789RC0001,contact@quantuminno.ca,Lessee,+14165550601,2021-09-01,2023-07-11
+P016,Green Energy Solutions,Active,Business,222 Solar Street,,85001,Phoenix,USA,EIN,33-4455667,info@greenenergy.com,Lessor,+1-602-555-0701,2019-11-20,2023-06-15
+P017,Green Energy Solutions Inc,Active,Business,222 Solar St,Suite 5,85001,Phoenix,USA,EIN,334455667,sales@greenenergy.com,Lessor,+16025550701,2019-11-21,2023-06-16
+P018,Metro Transport Services,Active,Business,999 Transit Way,,30301,Atlanta,USA,TAX_ID,55-6677889,dispatch@metrotrans.com,Lessee,+1-404-555-0801,2020-04-10,2023-08-05
+P019,Metro Transportation Services,Active,Business,999 Transit Way,Bay 3,30301,Atlanta,USA,TAX_ID,556677889,info@metrotrans.com,Lessee,+14045550801,2020-04-11,2023-08-06
+P020,Premier Financial Group,Active,Business,777 Wall Street,,10005,New York,USA,EIN,99-8877665,contact@premierfinancial.com,Lessor,+1-212-555-0901,2018-06-15,2023-05-20
+P021,Premier Financial Group LLC,Active,Mailing,777 Wall St,20th Floor,10005,New York,USA,EIN,998877665,info@premierfinancial.com,Lessor,+12125550901,2018-06-15,2023-05-21
+P022,Diamond Retail Chain,Active,Business,444 Commerce Plaza,,75201,Dallas,USA,TAX_ID,22-3344556,corporate@diamondretail.com,Lessee,+1-214-555-1001,2021-02-20,2023-07-25
+P023,Diamond Retail Chains Inc,Active,Business,444 Commerce Plz,,75201,Dallas,USA,TAX_ID,223344556,stores@diamondretail.com,Lessee,+12145551001,2021-02-21,2023-07-26
+P024,Alpine Construction,Active,Business,666 Builder Road,,80202,Denver,USA,EIN,44-5566778,projects@alpineconst.com,Supplier,+1-303-555-1101,2020-08-12,2023-06-10
+P025,Alpine Construction LLC,Active,Business,666 Builder Rd,Office 2,80202,Denver,USA,EIN,445566778,bids@alpineconst.com,Supplier,+13035551101,2020-08-13,2023-06-11
+P026,Coastal Shipping Ltd,Active,Business,111 Dock Street,,98101,Seattle,USA,TAX_ID,66-7788990,freight@coastalship.com,Lessee,+1-206-555-1201,2019-12-05,2023-08-10
+P027,Coastal Shipping Limited,Active,Business,111 Dock St,Pier 7,98101,Seattle,USA,TAX_ID,667788990,logistics@coastalship.com,Lessee,+12065551201,2019-12-06,2023-08-11
+P028,Nexus Technology Partners,Active,Business,333 Silicon Valley Blvd,,94025,Menlo Park,USA,EIN,88-9900112,partnerships@nexustech.com,Lessor,+1-650-555-1301,2022-03-15,2023-07-30
+P029,Nexus Tech Partners Inc,Active,Business,333 Silicon Valley Boulevard,,94025,Menlo Park,USA,EIN,889900112,info@nexustech.com,Lessor,+16505551301,2022-03-16,2023-07-31
+P030,Urban Development Corp,Active,Business,888 Skyline Drive,,33101,Miami,USA,TAX_ID,11-2244668,development@urbancorp.com,Lessee,+1-305-555-1401,2021-07-20,2023-06-25
+P031,Urban Development Corporation,Active,Mailing,888 Skyline Dr,Tower B,33101,Miami,USA,TAX_ID,112244668,projects@urbancorp.com,Lessee,+13055551401,2021-07-21,2023-06-26
+P032,Precision Medical Supplies,Active,Business,222 Healthcare Way,,19101,Philadelphia,USA,EIN,77-8899001,orders@precisionmed.com,Supplier,+1-215-555-1501,2020-10-08,2023-05-30
+P033,Precision Medical Supply Co,Active,Business,222 Healthcare Wy,,19101,Philadelphia,USA,EIN,778899001,sales@precisionmed.com,Supplier,+12155551501,2020-10-09,2023-05-31
+P034,Stellar Communications Inc,Active,Business,999 Broadcast Lane,,90001,Los Angeles,USA,TAX_ID,33-5577991,media@stellarcomm.com,Lessee,+1-323-555-1601,2019-08-25,2023-07-15
+P035,Stellar Communications,Active,Business,999 Broadcast Ln,Studio 4,90001,Los Angeles,USA,TAX_ID,335577991,production@stellarcomm.com,Lessee,+13235551601,2019-08-26,2023-07-16
+P036,Horizon Aerospace Ltd,Active,Business,777 Aviation Pkwy,,98108,Seattle,USA,EIN,99-0011223,engineering@horizonaero.com,Lessor,+1-206-555-1701,2018-04-12,2023-08-20
+P037,Horizon Aerospace Limited,Active,Business,777 Aviation Parkway,Hangar 5,98108,Seattle,USA,EIN,990011223,contracts@horizonaero.com,Lessor,+12065551701,2018-04-12,2023-08-21
+P038,Velocity Auto Group,Active,Business,555 Motorway Drive,,48201,Detroit,USA,TAX_ID,44-6688002,sales@velocityauto.com,Lessee,+1-313-555-1801,2021-11-10,2023-06-05
+P039,Velocity Automotive Group,Active,Business,555 Motorway Dr,,48201,Detroit,USA,TAX_ID,446688002,info@velocityauto.com,Lessee,+13135551801,2021-11-11,2023-06-06
+P040,Pacific Logistics Services,Active,Business,444 Port Boulevard,,92101,San Diego,USA,EIN,55-7799113,shipping@pacificlog.com,Supplier,+1-619-555-1901,2020-05-18,2023-07-08
+P041,Pacific Logistics Services Inc,Active,Mailing,444 Port Blvd,Warehouse 8,92101,San Diego,USA,EIN,557799113,warehouse@pacificlog.com,Supplier,+16195551901,2020-05-19,2023-07-09
+P042,Evergreen Hospitality Group,Active,Business,123 Resort Road,,89101,Las Vegas,USA,TAX_ID,66-8800224,reservations@evergreenhosp.com,Lessee,+1-702-555-2001,2019-09-14,2023-05-15
+P043,Evergreen Hospitality Grp,Active,Business,123 Resort Rd,Building C,89101,Las Vegas,USA,TAX_ID,668800224,hotels@evergreenhosp.com,Lessee,+17025552001,2019-09-15,2023-05-16
+P044,Titan Manufacturing Industries,Active,Business,888 Factory Street,,44101,Cleveland,USA,EIN,77-9911335,production@titanmfg.com,Supplier,+1-216-555-2101,2021-01-22,2023-08-12
+P045,Titan Manufacturing Ind,Active,Business,888 Factory St,Plant 2,44101,Cleveland,USA,EIN,779911335,operations@titanmfg.com,Supplier,+12165552101,2021-01-23,2023-08-13
+P046,Crown Property Management,Active,Business,333 Realty Plaza,,77001,Houston,USA,TAX_ID,88-0022446,leasing@crownprop.com,Lessor,+1-713-555-2201,2020-12-05,2023-06-18
+P047,Crown Property Mgmt LLC,Active,Business,333 Realty Plz,Suite 15,77001,Houston,USA,TAX_ID,880022446,properties@crownprop.com,Lessor,+17135552201,2020-12-06,2023-06-19
+P048,Innovation Software Solutions,Active,Business,222 Tech Park Drive,,78701,Austin,USA,EIN,99-1133557,support@innovationsw.com,Lessee,+1-512-555-2301,2022-02-28,2023-07-22
+P049,Innovation Software Sol,Active,Business,222 Tech Park Dr,Building 4,78701,Austin,USA,EIN,991133557,sales@innovationsw.com,Lessee,+15125552301,2022-03-01,2023-07-23
+P050,Atlantic Marine Services,Active,Business,777 Waterfront Ave,,02101,Boston,USA,TAX_ID,11-3355779,marine@atlanticmarine.com,Supplier,+1-617-555-2401,2019-07-19,2023-05-28
+P051,Atlantic Marine Services Inc,Active,Business,777 Waterfront Avenue,Dock 12,02101,Boston,USA,TAX_ID,113355779,operations@atlanticmarine.com,Supplier,+16175552401,2019-07-20,2023-05-29
+P052,Zenith Consulting Partners,Active,Business,555 Executive Blvd,,20001,Washington,USA,EIN,22-4466880,consulting@zenithpartners.com,Lessor,+1-202-555-2501,2021-05-11,2023-08-15
+P053,Zenith Consulting Ptnrs,Active,Mailing,555 Executive Boulevard,Floor 10,20001,Washington,USA,EIN,224466880,contact@zenithpartners.com,Lessor,+12025552501,2021-05-12,2023-08-16
+P054,Redwood Furniture Co,Active,Business,999 Craftsman Lane,,97201,Portland,USA,TAX_ID,33-5577991,sales@redwoodfurn.com,Supplier,+1-503-555-2601,2020-03-08,2023-06-12
+P055,Redwood Furniture Company,Active,Business,999 Craftsman Ln,Workshop 3,97201,Portland,USA,TAX_ID,335577991,orders@redwoodfurn.com,Supplier,+15035552601,2020-03-09,2023-06-13
+P056,Summit Capital Partners,Active,Business,111 Financial District,,94104,San Francisco,USA,EIN,44-6688002,investments@summitcap.com,Lessor,+1-415-555-2701,2018-11-30,2023-07-05
+P057,Summit Capital Partners LLC,Active,Business,111 Financial Dist,Suite 2000,94104,San Francisco,USA,EIN,446688002,funds@summitcap.com,Lessor,+14155552701,2018-11-30,2023-07-06
+P058,Riverside Distribution Center,Active,Business,666 Commerce Road,,63101,St Louis,USA,TAX_ID,55-7799113,logistics@riversidedist.com,Lessee,+1-314-555-2801,2021-08-16,2023-05-18
+P059,Riverside Distribution Ctr,Active,Business,666 Commerce Rd,Bay 15,63101,St Louis,USA,TAX_ID,557799113,warehouse@riversidedist.com,Lessee,+13145552801,2021-08-17,2023-05-19
+P060,Phoenix Marketing Group,Active,Business,444 Brand Street,,85001,Phoenix,USA,EIN,66-8800224,creative@phoenixmktg.com,Supplier,+1-602-555-2901,2020-09-22,2023-08-08
+P061,Phoenix Marketing Grp Inc,Active,Business,444 Brand St,Office 7,85001,Phoenix,USA,EIN,668800224,campaigns@phoenixmktg.com,Supplier,+16025552901,2020-09-23,2023-08-09
+P062,Cascade Energy Systems,Active,Business,777 Power Plant Road,,98101,Seattle,USA,TAX_ID,77-9911335,energy@cascadeenergy.com,Lessee,+1-206-555-3001,2019-04-15,2023-06-22
+P063,Cascade Energy Systems Inc,Active,Business,777 Power Plant Rd,Station B,98101,Seattle,USA,TAX_ID,779911335,operations@cascadeenergy.com,Lessee,+12065553001,2019-04-16,2023-06-23
+P064,Liberty Insurance Group,Active,Business,888 Coverage Plaza,,10001,New York,USA,EIN,88-0022446,claims@libertyins.com,Lessor,+1-212-555-3101,2018-08-20,2023-07-18
+P065,Liberty Insurance Grp LLC,Active,Mailing,888 Coverage Plz,Tower A,10001,New York,USA,EIN,880022446,policies@libertyins.com,Lessor,+12125553101,2018-08-20,2023-07-19
+P066,Granite Construction Services,Active,Business,333 Builder Avenue,,80202,Denver,USA,TAX_ID,99-1133557,projects@graniteconstruct.com,Supplier,+1-303-555-3201,2021-12-10,2023-05-25
+P067,Granite Construction Svcs,Active,Business,333 Builder Ave,Yard 4,80202,Denver,USA,TAX_ID,991133557,contracts@graniteconstruct.com,Supplier,+13035553201,2021-12-11,2023-05-26
+P068,Mercury Telecommunications,Active,Business,555 Network Drive,,60601,Chicago,USA,EIN,11-3355779,support@mercurytel.com,Lessee,+1-312-555-3301,2020-06-18,2023-08-02
+P069,Mercury Telecom Inc,Active,Business,555 Network Dr,Building 9,60601,Chicago,USA,EIN,113355779,sales@mercurytel.com,Lessee,+13125553301,2020-06-19,2023-08-03
+P070,Oakmont Real Estate Trust,Active,Business,222 Property Lane,,33101,Miami,USA,TAX_ID,22-4466880,invest@oakmontret.com,Lessor,+1-305-555-3401,2019-10-25,2023-06-28
+P071,Oakmont Real Estate Tr,Active,Business,222 Property Ln,Floor 5,33101,Miami,USA,TAX_ID,224466880,holdings@oakmontret.com,Lessor,+13055553401,2019-10-26,2023-06-29
+P072,Velocity Shipping Solutions,Active,Business,999 Freight Boulevard,,30301,Atlanta,USA,EIN,33-5577991,dispatch@velocityship.com,Supplier,+1-404-555-3501,2021-03-30,2023-07-12
+P073,Velocity Shipping Sol Inc,Active,Business,999 Freight Blvd,Terminal 6,30301,Atlanta,USA,EIN,335577991,operations@velocityship.com,Supplier,+14045553501,2021-03-31,2023-07-13
+P074,Sapphire Technology Labs,Active,Business,111 Innovation Circle,,02101,Boston,USA,TAX_ID,44-6688002,research@sapphiretech.com,Lessee,+1-617-555-3601,2022-04-12,2023-05-30
+P075,Sapphire Tech Laboratories,Active,Business,111 Innovation Cir,Lab 3,02101,Boston,USA,TAX_ID,446688002,development@sapphiretech.com,Lessee,+16175553601,2022-04-13,2023-05-31
+P076,Cornerstone Financial Services,Active,Business,666 Banking Street,,10005,New York,USA,EIN,55-7799113,banking@cornerstonefs.com,Lessor,+1-212-555-3701,2018-12-14,2023-08-18
+P077,Cornerstone Financial Svcs,Active,Business,666 Banking St,Suite 1200,10005,New York,USA,EIN,557799113,loans@cornerstonefs.com,Lessor,+12125553701,2018-12-14,2023-08-19
+P078,Platinum Automotive Parts,Active,Business,444 Auto Plaza,,48201,Detroit,USA,TAX_ID,66-8800224,parts@platinumauto.com,Supplier,+1-313-555-3801,2020-11-20,2023-06-08
+P079,Platinum Auto Parts Inc,Active,Business,444 Auto Plz,Warehouse 2,48201,Detroit,USA,TAX_ID,668800224,wholesale@platinumauto.com,Supplier,+13135553801,2020-11-21,2023-06-09
+P080,Summit Logistics International,Active,Business,777 Global Trade Way,,90001,Los Angeles,USA,EIN,77-9911335,global@summitlogistics.com,Lessee,+1-310-555-3901,2019-05-28,2023-07-28
+P081,Summit Logistics Intl,Active,Business,777 Global Trade Wy,Dock 20,90001,Los Angeles,USA,EIN,779911335,shipping@summitlogistics.com,Lessee,+13105553901,2019-05-29,2023-07-29
+P082,Emerald Healthcare Systems,Active,Business,888 Medical Center Dr,,19101,Philadelphia,USA,TAX_ID,88-0022446,admin@emeraldhealthcare.com,Lessee,+1-215-555-4001,2021-06-15,2023-05-22
+P083,Emerald Healthcare Sys,Active,Mailing,888 Medical Center Drive,Wing B,19101,Philadelphia,USA,TAX_ID,880022446,facilities@emeraldhealthcare.com,Lessee,+12155554001,2021-06-16,2023-05-23
+P084,Pinnacle Engineering Corp,Active,Business,222 Design Boulevard,,78701,Austin,USA,EIN,99-1133557,engineering@pinnacleeng.com,Supplier,+1-512-555-4101,2020-02-10,2023-08-25
+P085,Pinnacle Engineering Corporation,Active,Business,222 Design Blvd,Building 8,78701,Austin,USA,EIN,991133557,projects@pinnacleeng.com,Supplier,+15125554101,2020-02-11,2023-08-26
+P086,Harbor Freight Services,Active,Business,555 Cargo Street,,92101,San Diego,USA,TAX_ID,11-3355779,freight@harborfreight.com,Lessee,+1-619-555-4201,2019-08-08,2023-06-15
+P087,Harbor Freight Services LLC,Active,Business,555 Cargo St,Bay 11,92101,San Diego,USA,TAX_ID,113355779,logistics@harborfreight.com,Lessee,+16195554201,2019-08-09,2023-06-16
+P088,Crimson Media Productions,Active,Business,999 Studio Lane,,90210,Los Angeles,USA,EIN,22-4466880,production@crimsonmedia.com,Supplier,+1-323-555-4301,2021-09-18,2023-07-20
+P089,Crimson Media Prod Inc,Active,Business,999 Studio Ln,Stage 5,90210,Los Angeles,USA,EIN,224466880,creative@crimsonmedia.com,Supplier,+13235554301,2021-09-19,2023-07-21
+P090,Westfield Development Group,Active,Business,333 Urban Plaza,,75201,Dallas,USA,TAX_ID,33-5577991,development@westfielddev.com,Lessor,+1-214-555-4401,2018-07-22,2023-05-12
+P091,Westfield Development Grp,Active,Business,333 Urban Plz,Tower C,75201,Dallas,USA,TAX_ID,335577991,projects@westfielddev.com,Lessor,+12145554401,2018-07-22,2023-05-13
+P092,Alpine Medical Equipment,Active,Business,111 Healthcare Road,,85001,Phoenix,USA,EIN,44-6688002,sales@alpinemedical.com,Supplier,+1-602-555-4501,2020-10-30,2023-08-22
+P093,Alpine Medical Equip Co,Active,Business,111 Healthcare Rd,Unit 7,85001,Phoenix,USA,EIN,446688002,equipment@alpinemedical.com,Supplier,+16025554501,2020-10-31,2023-08-23
+P094,Riverside Technology Partners,Active,Business,666 Silicon Street,,94025,Menlo Park,USA,TAX_ID,55-7799113,tech@riversidetech.com,Lessee,+1-650-555-4601,2022-05-20,2023-06-30
+P095,Riverside Tech Partners Inc,Active,Business,666 Silicon St,Campus B,94025,Menlo Park,USA,TAX_ID,557799113,innovation@riversidetech.com,Lessee,+16505554601,2022-05-21,2023-07-01
+P096,Crown Transportation LLC,Active,Business,444 Transit Avenue,,44101,Cleveland,USA,EIN,66-8800224,transport@crowntrans.com,Lessee,+1-216-555-4701,2019-12-12,2023-07-08
+P097,Crown Transportation,Active,Business,444 Transit Ave,Fleet 9,44101,Cleveland,USA,EIN,668800224,dispatch@crowntrans.com,Lessee,+12165554701,2019-12-13,2023-07-09
+P098,Northstar Consulting Group,Active,Business,777 Strategy Plaza,,20001,Washington,USA,TAX_ID,77-9911335,consulting@northstargrp.com,Lessor,+1-202-555-4801,2021-10-05,2023-05-28
+P099,Northstar Consulting Grp,Active,Business,777 Strategy Plz,Suite 300,20001,Washington,USA,TAX_ID,779911335,advisory@northstargrp.com,Lessor,+12025554801,2021-10-06,2023-05-29
+P100,Pacific Coast Manufacturing,Active,Business,888 Industrial Way,,97201,Portland,USA,EIN,88-0022446,manufacturing@pacificcoast.com,Supplier,+1-503-555-4901,2020-01-25,2023-08-30
