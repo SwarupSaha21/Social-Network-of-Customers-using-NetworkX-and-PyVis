@@ -1,0 +1,765 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/css/tom-select.min.css" integrity="sha512-43fHB3GLgZfz8QXl1RPQ8O66oIgv3po9cJ5erMt1c4QISq9dYb195T3vr5ImnJPXuVroKcGBPXBFKETW8jrPNQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/js/tom-select.complete.js" integrity="sha512-jeF9CfnvzDiw9G9xiksVjxR2lib44Gnovvkv+3CgCG6NXCD4gqlA5nDAVW5WjpA+i+/zKsUWV5xNEbW1X/HH0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 700px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="P001">P001</option>
+                                
+                                    <option value="P002">P002</option>
+                                
+                                    <option value="P003">P003</option>
+                                
+                                    <option value="P004">P004</option>
+                                
+                                    <option value="P005">P005</option>
+                                
+                                    <option value="P006">P006</option>
+                                
+                                    <option value="P007">P007</option>
+                                
+                                    <option value="P008">P008</option>
+                                
+                                    <option value="P009">P009</option>
+                                
+                                    <option value="P010">P010</option>
+                                
+                                    <option value="P011">P011</option>
+                                
+                                    <option value="P012">P012</option>
+                                
+                                    <option value="P013">P013</option>
+                                
+                                    <option value="P014">P014</option>
+                                
+                                    <option value="P015">P015</option>
+                                
+                                    <option value="P016">P016</option>
+                                
+                                    <option value="P017">P017</option>
+                                
+                                    <option value="P018">P018</option>
+                                
+                                    <option value="P019">P019</option>
+                                
+                                    <option value="P020">P020</option>
+                                
+                                    <option value="P021">P021</option>
+                                
+                                    <option value="P022">P022</option>
+                                
+                                    <option value="P023">P023</option>
+                                
+                                    <option value="P024">P024</option>
+                                
+                                    <option value="P025">P025</option>
+                                
+                                    <option value="P026">P026</option>
+                                
+                                    <option value="P027">P027</option>
+                                
+                                    <option value="P028">P028</option>
+                                
+                                    <option value="P029">P029</option>
+                                
+                                    <option value="P030">P030</option>
+                                
+                                    <option value="P031">P031</option>
+                                
+                                    <option value="P032">P032</option>
+                                
+                                    <option value="P033">P033</option>
+                                
+                                    <option value="P034">P034</option>
+                                
+                                    <option value="P035">P035</option>
+                                
+                                    <option value="P036">P036</option>
+                                
+                                    <option value="P037">P037</option>
+                                
+                                    <option value="P038">P038</option>
+                                
+                                    <option value="P039">P039</option>
+                                
+                                    <option value="P040">P040</option>
+                                
+                                    <option value="P041">P041</option>
+                                
+                                    <option value="P042">P042</option>
+                                
+                                    <option value="P043">P043</option>
+                                
+                                    <option value="P044">P044</option>
+                                
+                                    <option value="P045">P045</option>
+                                
+                                    <option value="P046">P046</option>
+                                
+                                    <option value="P047">P047</option>
+                                
+                                    <option value="P048">P048</option>
+                                
+                                    <option value="P049">P049</option>
+                                
+                                    <option value="P050">P050</option>
+                                
+                                    <option value="P051">P051</option>
+                                
+                                    <option value="P052">P052</option>
+                                
+                                    <option value="P053">P053</option>
+                                
+                                    <option value="P054">P054</option>
+                                
+                                    <option value="P055">P055</option>
+                                
+                                    <option value="P056">P056</option>
+                                
+                                    <option value="P057">P057</option>
+                                
+                                    <option value="P058">P058</option>
+                                
+                                    <option value="P059">P059</option>
+                                
+                                    <option value="P060">P060</option>
+                                
+                                    <option value="P061">P061</option>
+                                
+                                    <option value="P062">P062</option>
+                                
+                                    <option value="P063">P063</option>
+                                
+                                    <option value="P064">P064</option>
+                                
+                                    <option value="P065">P065</option>
+                                
+                                    <option value="P066">P066</option>
+                                
+                                    <option value="P067">P067</option>
+                                
+                                    <option value="P068">P068</option>
+                                
+                                    <option value="P069">P069</option>
+                                
+                                    <option value="P070">P070</option>
+                                
+                                    <option value="P071">P071</option>
+                                
+                                    <option value="P072">P072</option>
+                                
+                                    <option value="P073">P073</option>
+                                
+                                    <option value="P074">P074</option>
+                                
+                                    <option value="P075">P075</option>
+                                
+                                    <option value="P076">P076</option>
+                                
+                                    <option value="P077">P077</option>
+                                
+                                    <option value="P078">P078</option>
+                                
+                                    <option value="P079">P079</option>
+                                
+                                    <option value="P080">P080</option>
+                                
+                                    <option value="P081">P081</option>
+                                
+                                    <option value="P082">P082</option>
+                                
+                                    <option value="P083">P083</option>
+                                
+                                    <option value="P084">P084</option>
+                                
+                                    <option value="P085">P085</option>
+                                
+                                    <option value="P086">P086</option>
+                                
+                                    <option value="P087">P087</option>
+                                
+                                    <option value="P088">P088</option>
+                                
+                                    <option value="P089">P089</option>
+                                
+                                    <option value="P090">P090</option>
+                                
+                                    <option value="P091">P091</option>
+                                
+                                    <option value="P092">P092</option>
+                                
+                                    <option value="P093">P093</option>
+                                
+                                    <option value="P094">P094</option>
+                                
+                                    <option value="P095">P095</option>
+                                
+                                    <option value="P096">P096</option>
+                                
+                                    <option value="P097">P097</option>
+                                
+                                    <option value="P098">P098</option>
+                                
+                                    <option value="P099">P099</option>
+                                
+                                    <option value="P100">P100</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "cyan"}, "group": "Lessee", "id": "P001", "label": "Acme Corporation Ltd", "shape": "dot", "title": "\n              \n              \n                Acme Corporation Ltd\n                Role: Lessee\n                VAT: 12-3456789\n                City: New York\n                Country: USA\n                Email: contact@acmecorp.com\n                Phone: +1-212-555-0101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P002", "label": "ACME CORPORATION LIMITED", "shape": "dot", "title": "\n              \n              \n                ACME CORPORATION LIMITED\n                Role: Lessee\n                VAT: 123456789\n                City: New York\n                Country: USA\n                Email: info@acmecorp.com\n                Phone: +12125550101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P003", "label": "Acme Corp", "shape": "dot", "title": "\n              \n              \n                Acme Corp\n                Role: Lessor\n                VAT: 12-3456789\n                City: New York\n                Country: USA\n                Email: contact@acmecorp.com\n                Phone: +1-212-555-0101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P004", "label": "Global Tech Industries Inc", "shape": "dot", "title": "\n              \n              \n                Global Tech Industries Inc\n                Role: Lessee\n                VAT: 98-7654321\n                City: San Francisco\n                Country: USA\n                Email: admin@globaltech.com\n                Phone: +1-415-555-0201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P005", "label": "Global Tech Industries", "shape": "dot", "title": "\n              \n              \n                Global Tech Industries\n                Role: Lessee\n                VAT: 987654321\n                City: San Francisco\n                Country: USA\n                Email: contact@globaltech.com\n                Phone: +14155550201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P006", "label": "GlobalTech Industries Inc.", "shape": "dot", "title": "\n              \n              \n                GlobalTech Industries Inc.\n                Role: Supplier\n                VAT: 98-7654321\n                City: San Francisco\n                Country: USA\n                Email: admin@globaltech.com\n                Phone: +1-415-555-0201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P007", "label": "Blue Ocean Logistics", "shape": "dot", "title": "\n              \n              \n                Blue Ocean Logistics\n                Role: Lessee\n                VAT: 45-6789012\n                City: Los Angeles\n                Country: USA\n                Email: info@blueocean.com\n                Phone: +1-310-555-0301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P008", "label": "Blue Ocean Logistics LLC", "shape": "dot", "title": "\n              \n              \n                Blue Ocean Logistics LLC\n                Role: Lessee\n                VAT: 456789012\n                City: Los Angeles\n                Country: USA\n                Email: info@blueocean.com\n                Phone: +1-310-555-0301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P009", "label": "Bleu Ocean Logistics", "shape": "dot", "title": "\n              \n              \n                Bleu Ocean Logistics\n                Role: Lessor\n                VAT: 45-6789012\n                City: Los Angeles\n                Country: USA\n                Email: contact@blueocean.com\n                Phone: +13105550301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P010", "label": "TechStart Solutions", "shape": "dot", "title": "\n              \n              \n                TechStart Solutions\n                Role: Lessee\n                VAT: 11-2233445\n                City: Boston\n                Country: USA\n                Email: hello@techstart.com\n                Phone: +1-617-555-0401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P011", "label": "TechStart Solutions Inc", "shape": "dot", "title": "\n              \n              \n                TechStart Solutions Inc\n                Role: Lessee\n                VAT: 112233445\n                City: Boston\n                Country: USA\n                Email: hello@techstart.com\n                Phone: +16175550401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P012", "label": "Sunrise Manufacturing Co", "shape": "dot", "title": "\n              \n              \n                Sunrise Manufacturing Co\n                Role: Supplier\n                VAT: 78-9012345\n                City: Chicago\n                Country: USA\n                Email: orders@sunrisemfg.com\n                Phone: +1-312-555-0501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P013", "label": "Sunrise Manufacturing Company", "shape": "dot", "title": "\n              \n              \n                Sunrise Manufacturing Company\n                Role: Supplier\n                VAT: 789012345\n                City: Chicago\n                Country: USA\n                Email: sales@sunrisemfg.com\n                Phone: +13125550501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P014", "label": "Quantum Innovations Ltd", "shape": "dot", "title": "\n              \n              \n                Quantum Innovations Ltd\n                Role: Lessee\n                VAT: 123456789RC0001\n                City: Toronto\n                Country: CAN\n                Email: info@quantuminno.ca\n                Phone: +1-416-555-0601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P015", "label": "Quantum Innovations Limited", "shape": "dot", "title": "\n              \n              \n                Quantum Innovations Limited\n                Role: Lessee\n                VAT: 123456789RC0001\n                City: Toronto\n                Country: CAN\n                Email: contact@quantuminno.ca\n                Phone: +14165550601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P016", "label": "Green Energy Solutions", "shape": "dot", "title": "\n              \n              \n                Green Energy Solutions\n                Role: Lessor\n                VAT: 33-4455667\n                City: Phoenix\n                Country: USA\n                Email: info@greenenergy.com\n                Phone: +1-602-555-0701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P017", "label": "Green Energy Solutions Inc", "shape": "dot", "title": "\n              \n              \n                Green Energy Solutions Inc\n                Role: Lessor\n                VAT: 334455667\n                City: Phoenix\n                Country: USA\n                Email: sales@greenenergy.com\n                Phone: +16025550701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P018", "label": "Metro Transport Services", "shape": "dot", "title": "\n              \n              \n                Metro Transport Services\n                Role: Lessee\n                VAT: 55-6677889\n                City: Atlanta\n                Country: USA\n                Email: dispatch@metrotrans.com\n                Phone: +1-404-555-0801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P019", "label": "Metro Transportation Services", "shape": "dot", "title": "\n              \n              \n                Metro Transportation Services\n                Role: Lessee\n                VAT: 556677889\n                City: Atlanta\n                Country: USA\n                Email: info@metrotrans.com\n                Phone: +14045550801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P020", "label": "Premier Financial Group", "shape": "dot", "title": "\n              \n              \n                Premier Financial Group\n                Role: Lessor\n                VAT: 99-8877665\n                City: New York\n                Country: USA\n                Email: contact@premierfinancial.com\n                Phone: +1-212-555-0901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P021", "label": "Premier Financial Group LLC", "shape": "dot", "title": "\n              \n              \n                Premier Financial Group LLC\n                Role: Lessor\n                VAT: 998877665\n                City: New York\n                Country: USA\n                Email: info@premierfinancial.com\n                Phone: +12125550901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P022", "label": "Diamond Retail Chain", "shape": "dot", "title": "\n              \n              \n                Diamond Retail Chain\n                Role: Lessee\n                VAT: 22-3344556\n                City: Dallas\n                Country: USA\n                Email: corporate@diamondretail.com\n                Phone: +1-214-555-1001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P023", "label": "Diamond Retail Chains Inc", "shape": "dot", "title": "\n              \n              \n                Diamond Retail Chains Inc\n                Role: Lessee\n                VAT: 223344556\n                City: Dallas\n                Country: USA\n                Email: stores@diamondretail.com\n                Phone: +12145551001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P024", "label": "Alpine Construction", "shape": "dot", "title": "\n              \n              \n                Alpine Construction\n                Role: Supplier\n                VAT: 44-5566778\n                City: Denver\n                Country: USA\n                Email: projects@alpineconst.com\n                Phone: +1-303-555-1101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P025", "label": "Alpine Construction LLC", "shape": "dot", "title": "\n              \n              \n                Alpine Construction LLC\n                Role: Supplier\n                VAT: 445566778\n                City: Denver\n                Country: USA\n                Email: bids@alpineconst.com\n                Phone: +13035551101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P026", "label": "Coastal Shipping Ltd", "shape": "dot", "title": "\n              \n              \n                Coastal Shipping Ltd\n                Role: Lessee\n                VAT: 66-7788990\n                City: Seattle\n                Country: USA\n                Email: freight@coastalship.com\n                Phone: +1-206-555-1201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P027", "label": "Coastal Shipping Limited", "shape": "dot", "title": "\n              \n              \n                Coastal Shipping Limited\n                Role: Lessee\n                VAT: 667788990\n                City: Seattle\n                Country: USA\n                Email: logistics@coastalship.com\n                Phone: +12065551201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P028", "label": "Nexus Technology Partners", "shape": "dot", "title": "\n              \n              \n                Nexus Technology Partners\n                Role: Lessor\n                VAT: 88-9900112\n                City: Menlo Park\n                Country: USA\n                Email: partnerships@nexustech.com\n                Phone: +1-650-555-1301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P029", "label": "Nexus Tech Partners Inc", "shape": "dot", "title": "\n              \n              \n                Nexus Tech Partners Inc\n                Role: Lessor\n                VAT: 889900112\n                City: Menlo Park\n                Country: USA\n                Email: info@nexustech.com\n                Phone: +16505551301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P030", "label": "Urban Development Corp", "shape": "dot", "title": "\n              \n              \n                Urban Development Corp\n                Role: Lessee\n                VAT: 11-2244668\n                City: Miami\n                Country: USA\n                Email: development@urbancorp.com\n                Phone: +1-305-555-1401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P031", "label": "Urban Development Corporation", "shape": "dot", "title": "\n              \n              \n                Urban Development Corporation\n                Role: Lessee\n                VAT: 112244668\n                City: Miami\n                Country: USA\n                Email: projects@urbancorp.com\n                Phone: +13055551401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P032", "label": "Precision Medical Supplies", "shape": "dot", "title": "\n              \n              \n                Precision Medical Supplies\n                Role: Supplier\n                VAT: 77-8899001\n                City: Philadelphia\n                Country: USA\n                Email: orders@precisionmed.com\n                Phone: +1-215-555-1501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P033", "label": "Precision Medical Supply Co", "shape": "dot", "title": "\n              \n              \n                Precision Medical Supply Co\n                Role: Supplier\n                VAT: 778899001\n                City: Philadelphia\n                Country: USA\n                Email: sales@precisionmed.com\n                Phone: +12155551501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P034", "label": "Stellar Communications Inc", "shape": "dot", "title": "\n              \n              \n                Stellar Communications Inc\n                Role: Lessee\n                VAT: 33-5577991\n                City: Los Angeles\n                Country: USA\n                Email: media@stellarcomm.com\n                Phone: +1-323-555-1601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P035", "label": "Stellar Communications", "shape": "dot", "title": "\n              \n              \n                Stellar Communications\n                Role: Lessee\n                VAT: 335577991\n                City: Los Angeles\n                Country: USA\n                Email: production@stellarcomm.com\n                Phone: +13235551601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P036", "label": "Horizon Aerospace Ltd", "shape": "dot", "title": "\n              \n              \n                Horizon Aerospace Ltd\n                Role: Lessor\n                VAT: 99-0011223\n                City: Seattle\n                Country: USA\n                Email: engineering@horizonaero.com\n                Phone: +1-206-555-1701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P037", "label": "Horizon Aerospace Limited", "shape": "dot", "title": "\n              \n              \n                Horizon Aerospace Limited\n                Role: Lessor\n                VAT: 990011223\n                City: Seattle\n                Country: USA\n                Email: contracts@horizonaero.com\n                Phone: +12065551701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P038", "label": "Velocity Auto Group", "shape": "dot", "title": "\n              \n              \n                Velocity Auto Group\n                Role: Lessee\n                VAT: 44-6688002\n                City: Detroit\n                Country: USA\n                Email: sales@velocityauto.com\n                Phone: +1-313-555-1801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P039", "label": "Velocity Automotive Group", "shape": "dot", "title": "\n              \n              \n                Velocity Automotive Group\n                Role: Lessee\n                VAT: 446688002\n                City: Detroit\n                Country: USA\n                Email: info@velocityauto.com\n                Phone: +13135551801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P040", "label": "Pacific Logistics Services", "shape": "dot", "title": "\n              \n              \n                Pacific Logistics Services\n                Role: Supplier\n                VAT: 55-7799113\n                City: San Diego\n                Country: USA\n                Email: shipping@pacificlog.com\n                Phone: +1-619-555-1901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P041", "label": "Pacific Logistics Services Inc", "shape": "dot", "title": "\n              \n              \n                Pacific Logistics Services Inc\n                Role: Supplier\n                VAT: 557799113\n                City: San Diego\n                Country: USA\n                Email: warehouse@pacificlog.com\n                Phone: +16195551901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P042", "label": "Evergreen Hospitality Group", "shape": "dot", "title": "\n              \n              \n                Evergreen Hospitality Group\n                Role: Lessee\n                VAT: 66-8800224\n                City: Las Vegas\n                Country: USA\n                Email: reservations@evergreenhosp.com\n                Phone: +1-702-555-2001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P043", "label": "Evergreen Hospitality Grp", "shape": "dot", "title": "\n              \n              \n                Evergreen Hospitality Grp\n                Role: Lessee\n                VAT: 668800224\n                City: Las Vegas\n                Country: USA\n                Email: hotels@evergreenhosp.com\n                Phone: +17025552001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P044", "label": "Titan Manufacturing Industries", "shape": "dot", "title": "\n              \n              \n                Titan Manufacturing Industries\n                Role: Supplier\n                VAT: 77-9911335\n                City: Cleveland\n                Country: USA\n                Email: production@titanmfg.com\n                Phone: +1-216-555-2101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P045", "label": "Titan Manufacturing Ind", "shape": "dot", "title": "\n              \n              \n                Titan Manufacturing Ind\n                Role: Supplier\n                VAT: 779911335\n                City: Cleveland\n                Country: USA\n                Email: operations@titanmfg.com\n                Phone: +12165552101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P046", "label": "Crown Property Management", "shape": "dot", "title": "\n              \n              \n                Crown Property Management\n                Role: Lessor\n                VAT: 88-0022446\n                City: Houston\n                Country: USA\n                Email: leasing@crownprop.com\n                Phone: +1-713-555-2201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P047", "label": "Crown Property Mgmt LLC", "shape": "dot", "title": "\n              \n              \n                Crown Property Mgmt LLC\n                Role: Lessor\n                VAT: 880022446\n                City: Houston\n                Country: USA\n                Email: properties@crownprop.com\n                Phone: +17135552201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P048", "label": "Innovation Software Solutions", "shape": "dot", "title": "\n              \n              \n                Innovation Software Solutions\n                Role: Lessee\n                VAT: 99-1133557\n                City: Austin\n                Country: USA\n                Email: support@innovationsw.com\n                Phone: +1-512-555-2301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P049", "label": "Innovation Software Sol", "shape": "dot", "title": "\n              \n              \n                Innovation Software Sol\n                Role: Lessee\n                VAT: 991133557\n                City: Austin\n                Country: USA\n                Email: sales@innovationsw.com\n                Phone: +15125552301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P050", "label": "Atlantic Marine Services", "shape": "dot", "title": "\n              \n              \n                Atlantic Marine Services\n                Role: Supplier\n                VAT: 11-3355779\n                City: Boston\n                Country: USA\n                Email: marine@atlanticmarine.com\n                Phone: +1-617-555-2401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P051", "label": "Atlantic Marine Services Inc", "shape": "dot", "title": "\n              \n              \n                Atlantic Marine Services Inc\n                Role: Supplier\n                VAT: 113355779\n                City: Boston\n                Country: USA\n                Email: operations@atlanticmarine.com\n                Phone: +16175552401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P052", "label": "Zenith Consulting Partners", "shape": "dot", "title": "\n              \n              \n                Zenith Consulting Partners\n                Role: Lessor\n                VAT: 22-4466880\n                City: Washington\n                Country: USA\n                Email: consulting@zenithpartners.com\n                Phone: +1-202-555-2501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P053", "label": "Zenith Consulting Ptnrs", "shape": "dot", "title": "\n              \n              \n                Zenith Consulting Ptnrs\n                Role: Lessor\n                VAT: 224466880\n                City: Washington\n                Country: USA\n                Email: contact@zenithpartners.com\n                Phone: +12025552501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P054", "label": "Redwood Furniture Co", "shape": "dot", "title": "\n              \n              \n                Redwood Furniture Co\n                Role: Supplier\n                VAT: 33-5577991\n                City: Portland\n                Country: USA\n                Email: sales@redwoodfurn.com\n                Phone: +1-503-555-2601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P055", "label": "Redwood Furniture Company", "shape": "dot", "title": "\n              \n              \n                Redwood Furniture Company\n                Role: Supplier\n                VAT: 335577991\n                City: Portland\n                Country: USA\n                Email: orders@redwoodfurn.com\n                Phone: +15035552601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P056", "label": "Summit Capital Partners", "shape": "dot", "title": "\n              \n              \n                Summit Capital Partners\n                Role: Lessor\n                VAT: 44-6688002\n                City: San Francisco\n                Country: USA\n                Email: investments@summitcap.com\n                Phone: +1-415-555-2701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P057", "label": "Summit Capital Partners LLC", "shape": "dot", "title": "\n              \n              \n                Summit Capital Partners LLC\n                Role: Lessor\n                VAT: 446688002\n                City: San Francisco\n                Country: USA\n                Email: funds@summitcap.com\n                Phone: +14155552701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P058", "label": "Riverside Distribution Center", "shape": "dot", "title": "\n              \n              \n                Riverside Distribution Center\n                Role: Lessee\n                VAT: 55-7799113\n                City: St Louis\n                Country: USA\n                Email: logistics@riversidedist.com\n                Phone: +1-314-555-2801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P059", "label": "Riverside Distribution Ctr", "shape": "dot", "title": "\n              \n              \n                Riverside Distribution Ctr\n                Role: Lessee\n                VAT: 557799113\n                City: St Louis\n                Country: USA\n                Email: warehouse@riversidedist.com\n                Phone: +13145552801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P060", "label": "Phoenix Marketing Group", "shape": "dot", "title": "\n              \n              \n                Phoenix Marketing Group\n                Role: Supplier\n                VAT: 66-8800224\n                City: Phoenix\n                Country: USA\n                Email: creative@phoenixmktg.com\n                Phone: +1-602-555-2901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P061", "label": "Phoenix Marketing Grp Inc", "shape": "dot", "title": "\n              \n              \n                Phoenix Marketing Grp Inc\n                Role: Supplier\n                VAT: 668800224\n                City: Phoenix\n                Country: USA\n                Email: campaigns@phoenixmktg.com\n                Phone: +16025552901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P062", "label": "Cascade Energy Systems", "shape": "dot", "title": "\n              \n              \n                Cascade Energy Systems\n                Role: Lessee\n                VAT: 77-9911335\n                City: Seattle\n                Country: USA\n                Email: energy@cascadeenergy.com\n                Phone: +1-206-555-3001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P063", "label": "Cascade Energy Systems Inc", "shape": "dot", "title": "\n              \n              \n                Cascade Energy Systems Inc\n                Role: Lessee\n                VAT: 779911335\n                City: Seattle\n                Country: USA\n                Email: operations@cascadeenergy.com\n                Phone: +12065553001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P064", "label": "Liberty Insurance Group", "shape": "dot", "title": "\n              \n              \n                Liberty Insurance Group\n                Role: Lessor\n                VAT: 88-0022446\n                City: New York\n                Country: USA\n                Email: claims@libertyins.com\n                Phone: +1-212-555-3101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P065", "label": "Liberty Insurance Grp LLC", "shape": "dot", "title": "\n              \n              \n                Liberty Insurance Grp LLC\n                Role: Lessor\n                VAT: 880022446\n                City: New York\n                Country: USA\n                Email: policies@libertyins.com\n                Phone: +12125553101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P066", "label": "Granite Construction Services", "shape": "dot", "title": "\n              \n              \n                Granite Construction Services\n                Role: Supplier\n                VAT: 99-1133557\n                City: Denver\n                Country: USA\n                Email: projects@graniteconstruct.com\n                Phone: +1-303-555-3201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P067", "label": "Granite Construction Svcs", "shape": "dot", "title": "\n              \n              \n                Granite Construction Svcs\n                Role: Supplier\n                VAT: 991133557\n                City: Denver\n                Country: USA\n                Email: contracts@graniteconstruct.com\n                Phone: +13035553201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P068", "label": "Mercury Telecommunications", "shape": "dot", "title": "\n              \n              \n                Mercury Telecommunications\n                Role: Lessee\n                VAT: 11-3355779\n                City: Chicago\n                Country: USA\n                Email: support@mercurytel.com\n                Phone: +1-312-555-3301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P069", "label": "Mercury Telecom Inc", "shape": "dot", "title": "\n              \n              \n                Mercury Telecom Inc\n                Role: Lessee\n                VAT: 113355779\n                City: Chicago\n                Country: USA\n                Email: sales@mercurytel.com\n                Phone: +13125553301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P070", "label": "Oakmont Real Estate Trust", "shape": "dot", "title": "\n              \n              \n                Oakmont Real Estate Trust\n                Role: Lessor\n                VAT: 22-4466880\n                City: Miami\n                Country: USA\n                Email: invest@oakmontret.com\n                Phone: +1-305-555-3401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P071", "label": "Oakmont Real Estate Tr", "shape": "dot", "title": "\n              \n              \n                Oakmont Real Estate Tr\n                Role: Lessor\n                VAT: 224466880\n                City: Miami\n                Country: USA\n                Email: holdings@oakmontret.com\n                Phone: +13055553401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P072", "label": "Velocity Shipping Solutions", "shape": "dot", "title": "\n              \n              \n                Velocity Shipping Solutions\n                Role: Supplier\n                VAT: 33-5577991\n                City: Atlanta\n                Country: USA\n                Email: dispatch@velocityship.com\n                Phone: +1-404-555-3501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P073", "label": "Velocity Shipping Sol Inc", "shape": "dot", "title": "\n              \n              \n                Velocity Shipping Sol Inc\n                Role: Supplier\n                VAT: 335577991\n                City: Atlanta\n                Country: USA\n                Email: operations@velocityship.com\n                Phone: +14045553501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P074", "label": "Sapphire Technology Labs", "shape": "dot", "title": "\n              \n              \n                Sapphire Technology Labs\n                Role: Lessee\n                VAT: 44-6688002\n                City: Boston\n                Country: USA\n                Email: research@sapphiretech.com\n                Phone: +1-617-555-3601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P075", "label": "Sapphire Tech Laboratories", "shape": "dot", "title": "\n              \n              \n                Sapphire Tech Laboratories\n                Role: Lessee\n                VAT: 446688002\n                City: Boston\n                Country: USA\n                Email: development@sapphiretech.com\n                Phone: +16175553601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P076", "label": "Cornerstone Financial Services", "shape": "dot", "title": "\n              \n              \n                Cornerstone Financial Services\n                Role: Lessor\n                VAT: 55-7799113\n                City: New York\n                Country: USA\n                Email: banking@cornerstonefs.com\n                Phone: +1-212-555-3701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P077", "label": "Cornerstone Financial Svcs", "shape": "dot", "title": "\n              \n              \n                Cornerstone Financial Svcs\n                Role: Lessor\n                VAT: 557799113\n                City: New York\n                Country: USA\n                Email: loans@cornerstonefs.com\n                Phone: +12125553701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P078", "label": "Platinum Automotive Parts", "shape": "dot", "title": "\n              \n              \n                Platinum Automotive Parts\n                Role: Supplier\n                VAT: 66-8800224\n                City: Detroit\n                Country: USA\n                Email: parts@platinumauto.com\n                Phone: +1-313-555-3801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P079", "label": "Platinum Auto Parts Inc", "shape": "dot", "title": "\n              \n              \n                Platinum Auto Parts Inc\n                Role: Supplier\n                VAT: 668800224\n                City: Detroit\n                Country: USA\n                Email: wholesale@platinumauto.com\n                Phone: +13135553801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P080", "label": "Summit Logistics International", "shape": "dot", "title": "\n              \n              \n                Summit Logistics International\n                Role: Lessee\n                VAT: 77-9911335\n                City: Los Angeles\n                Country: USA\n                Email: global@summitlogistics.com\n                Phone: +1-310-555-3901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P081", "label": "Summit Logistics Intl", "shape": "dot", "title": "\n              \n              \n                Summit Logistics Intl\n                Role: Lessee\n                VAT: 779911335\n                City: Los Angeles\n                Country: USA\n                Email: shipping@summitlogistics.com\n                Phone: +13105553901\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P082", "label": "Emerald Healthcare Systems", "shape": "dot", "title": "\n              \n              \n                Emerald Healthcare Systems\n                Role: Lessee\n                VAT: 88-0022446\n                City: Philadelphia\n                Country: USA\n                Email: admin@emeraldhealthcare.com\n                Phone: +1-215-555-4001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P083", "label": "Emerald Healthcare Sys", "shape": "dot", "title": "\n              \n              \n                Emerald Healthcare Sys\n                Role: Lessee\n                VAT: 880022446\n                City: Philadelphia\n                Country: USA\n                Email: facilities@emeraldhealthcare.com\n                Phone: +12155554001\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P084", "label": "Pinnacle Engineering Corp", "shape": "dot", "title": "\n              \n              \n                Pinnacle Engineering Corp\n                Role: Supplier\n                VAT: 99-1133557\n                City: Austin\n                Country: USA\n                Email: engineering@pinnacleeng.com\n                Phone: +1-512-555-4101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P085", "label": "Pinnacle Engineering Corporation", "shape": "dot", "title": "\n              \n              \n                Pinnacle Engineering Corporation\n                Role: Supplier\n                VAT: 991133557\n                City: Austin\n                Country: USA\n                Email: projects@pinnacleeng.com\n                Phone: +15125554101\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P086", "label": "Harbor Freight Services", "shape": "dot", "title": "\n              \n              \n                Harbor Freight Services\n                Role: Lessee\n                VAT: 11-3355779\n                City: San Diego\n                Country: USA\n                Email: freight@harborfreight.com\n                Phone: +1-619-555-4201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P087", "label": "Harbor Freight Services LLC", "shape": "dot", "title": "\n              \n              \n                Harbor Freight Services LLC\n                Role: Lessee\n                VAT: 113355779\n                City: San Diego\n                Country: USA\n                Email: logistics@harborfreight.com\n                Phone: +16195554201\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P088", "label": "Crimson Media Productions", "shape": "dot", "title": "\n              \n              \n                Crimson Media Productions\n                Role: Supplier\n                VAT: 22-4466880\n                City: Los Angeles\n                Country: USA\n                Email: production@crimsonmedia.com\n                Phone: +1-323-555-4301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P089", "label": "Crimson Media Prod Inc", "shape": "dot", "title": "\n              \n              \n                Crimson Media Prod Inc\n                Role: Supplier\n                VAT: 224466880\n                City: Los Angeles\n                Country: USA\n                Email: creative@crimsonmedia.com\n                Phone: +13235554301\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P090", "label": "Westfield Development Group", "shape": "dot", "title": "\n              \n              \n                Westfield Development Group\n                Role: Lessor\n                VAT: 33-5577991\n                City: Dallas\n                Country: USA\n                Email: development@westfielddev.com\n                Phone: +1-214-555-4401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P091", "label": "Westfield Development Grp", "shape": "dot", "title": "\n              \n              \n                Westfield Development Grp\n                Role: Lessor\n                VAT: 335577991\n                City: Dallas\n                Country: USA\n                Email: projects@westfielddev.com\n                Phone: +12145554401\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P092", "label": "Alpine Medical Equipment", "shape": "dot", "title": "\n              \n              \n                Alpine Medical Equipment\n                Role: Supplier\n                VAT: 44-6688002\n                City: Phoenix\n                Country: USA\n                Email: sales@alpinemedical.com\n                Phone: +1-602-555-4501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P093", "label": "Alpine Medical Equip Co", "shape": "dot", "title": "\n              \n              \n                Alpine Medical Equip Co\n                Role: Supplier\n                VAT: 446688002\n                City: Phoenix\n                Country: USA\n                Email: equipment@alpinemedical.com\n                Phone: +16025554501\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P094", "label": "Riverside Technology Partners", "shape": "dot", "title": "\n              \n              \n                Riverside Technology Partners\n                Role: Lessee\n                VAT: 55-7799113\n                City: Menlo Park\n                Country: USA\n                Email: tech@riversidetech.com\n                Phone: +1-650-555-4601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P095", "label": "Riverside Tech Partners Inc", "shape": "dot", "title": "\n              \n              \n                Riverside Tech Partners Inc\n                Role: Lessee\n                VAT: 557799113\n                City: Menlo Park\n                Country: USA\n                Email: innovation@riversidetech.com\n                Phone: +16505554601\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P096", "label": "Crown Transportation LLC", "shape": "dot", "title": "\n              \n              \n                Crown Transportation LLC\n                Role: Lessee\n                VAT: 66-8800224\n                City: Cleveland\n                Country: USA\n                Email: transport@crowntrans.com\n                Phone: +1-216-555-4701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessee", "id": "P097", "label": "Crown Transportation", "shape": "dot", "title": "\n              \n              \n                Crown Transportation\n                Role: Lessee\n                VAT: 668800224\n                City: Cleveland\n                Country: USA\n                Email: dispatch@crowntrans.com\n                Phone: +12165554701\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P098", "label": "Northstar Consulting Group", "shape": "dot", "title": "\n              \n              \n                Northstar Consulting Group\n                Role: Lessor\n                VAT: 77-9911335\n                City: Washington\n                Country: USA\n                Email: consulting@northstargrp.com\n                Phone: +1-202-555-4801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Lessor", "id": "P099", "label": "Northstar Consulting Grp", "shape": "dot", "title": "\n              \n              \n                Northstar Consulting Grp\n                Role: Lessor\n                VAT: 779911335\n                City: Washington\n                Country: USA\n                Email: advisory@northstargrp.com\n                Phone: +12025554801\n              \n              \n              "}, {"font": {"color": "cyan"}, "group": "Supplier", "id": "P100", "label": "Pacific Coast Manufacturing", "shape": "dot", "title": "\n              \n              \n                Pacific Coast Manufacturing\n                Role: Supplier\n                VAT: 88-0022446\n                City: Portland\n                Country: USA\n                Email: manufacturing@pacificcoast.com\n                Phone: +1-503-555-4901\n              \n              \n              "}]);
+                  edges = new vis.DataSet([{"from": "P004", "title": "Similarity: 93.3", "to": "P005", "value": 93.33333333333333}, {"from": "P004", "title": "Similarity: 84.6", "to": "P006", "value": 84.61538461538463}, {"from": "P007", "title": "Similarity: 92.7", "to": "P008", "value": 92.72727272727273}, {"from": "P007", "title": "Similarity: 96.0", "to": "P009", "value": 96.0}, {"from": "P008", "title": "Similarity: 89.1", "to": "P009", "value": 89.0909090909091}, {"from": "P010", "title": "Similarity: 92.4", "to": "P011", "value": 92.3809523809524}, {"from": "P012", "title": "Similarity: 92.5", "to": "P013", "value": 92.45283018867926}, {"from": "P014", "title": "Similarity: 93.6", "to": "P015", "value": 93.60000000000001}, {"from": "P016", "title": "Similarity: 93.3", "to": "P017", "value": 93.33333333333333}, {"from": "P018", "title": "Similarity: 92.5", "to": "P019", "value": 92.45283018867926}, {"from": "P020", "title": "Similarity: 93.6", "to": "P021", "value": 93.60000000000001}, {"from": "P022", "title": "Similarity: 91.1", "to": "P023", "value": 91.11111111111111}, {"from": "P024", "title": "Similarity: 92.4", "to": "P025", "value": 92.3809523809524}, {"from": "P026", "title": "Similarity: 92.7", "to": "P027", "value": 92.72727272727273}, {"from": "P028", "title": "Similarity: 83.3", "to": "P029", "value": 83.33333333333333}, {"from": "P030", "title": "Similarity: 89.0", "to": "P031", "value": 89.01960784313727}, {"from": "P032", "title": "Similarity: 89.4", "to": "P033", "value": 89.43396226415095}, {"from": "P034", "title": "Similarity: 93.3", "to": "P035", "value": 93.33333333333333}, {"from": "P036", "title": "Similarity: 93.0", "to": "P037", "value": 93.04347826086958}, {"from": "P038", "title": "Similarity: 89.1", "to": "P039", "value": 89.0909090909091}, {"from": "P040", "title": "Similarity: 94.3", "to": "P041", "value": 94.28571428571429}, {"from": "P042", "title": "Similarity: 96.9", "to": "P043", "value": 96.92307692307693}, {"from": "P044", "title": "Similarity: 89.4", "to": "P045", "value": 89.43396226415095}, {"from": "P046", "title": "Similarity: 83.3", "to": "P047", "value": 83.33333333333333}, {"from": "P048", "title": "Similarity: 90.8", "to": "P049", "value": 90.76923076923076}, {"from": "P050", "title": "Similarity: 93.8", "to": "P051", "value": 93.84615384615385}, {"from": "P052", "title": "Similarity: 95.1", "to": "P053", "value": 95.10204081632654}, {"from": "P054", "title": "Similarity: 91.1", "to": "P055", "value": 91.11111111111111}, {"from": "P056", "title": "Similarity: 93.6", "to": "P057", "value": 93.60000000000001}, {"from": "P058", "title": "Similarity: 95.6", "to": "P059", "value": 95.63636363636364}, {"from": "P060", "title": "Similarity: 90.0", "to": "P061", "value": 90.0}, {"from": "P062", "title": "Similarity: 93.3", "to": "P063", "value": 93.33333333333333}, {"from": "P064", "title": "Similarity: 90.0", "to": "P065", "value": 90.0}, {"from": "P066", "title": "Similarity: 94.1", "to": "P067", "value": 94.07407407407408}, {"from": "P070", "title": "Similarity: 94.9", "to": "P071", "value": 94.8936170212766}, {"from": "P072", "title": "Similarity: 84.6", "to": "P073", "value": 84.61538461538463}, {"from": "P076", "title": "Similarity: 94.3", "to": "P077", "value": 94.28571428571429}, {"from": "P078", "title": "Similarity: 83.3", "to": "P079", "value": 83.33333333333333}, {"from": "P080", "title": "Similarity: 85.9", "to": "P081", "value": 85.88235294117646}, {"from": "P082", "title": "Similarity: 93.3", "to": "P083", "value": 93.33333333333333}, {"from": "P084", "title": "Similarity: 90.2", "to": "P085", "value": 90.17543859649123}, {"from": "P086", "title": "Similarity: 93.6", "to": "P087", "value": 93.60000000000001}, {"from": "P088", "title": "Similarity: 81.3", "to": "P089", "value": 81.27659574468086}, {"from": "P090", "title": "Similarity: 96.9", "to": "P091", "value": 96.92307692307693}, {"from": "P092", "title": "Similarity: 88.1", "to": "P093", "value": 88.08510638297872}, {"from": "P094", "title": "Similarity: 85.7", "to": "P095", "value": 85.71428571428571}, {"from": "P096", "title": "Similarity: 92.7", "to": "P097", "value": 92.72727272727273}, {"from": "P098", "title": "Similarity: 96.8", "to": "P099", "value": 96.80000000000001}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
